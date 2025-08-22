@@ -21,7 +21,7 @@ add_documents = not os.path.exists(db_location)
 
 if add_documents:
 #Split into chunks
-    splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=500)
     docs = []
     for page in pages:
         if page:

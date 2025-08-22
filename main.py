@@ -6,7 +6,7 @@ from vector import retriever
 stream_handler = StreamingStdOutCallbackHandler()
 
 #What model you use
-model = OllamaLLM(model="llama3.1:8b",
+model = OllamaLLM(model="deepseek-r1:8b",
                   streaming = True,
                   callbacks=[stream_handler]
                   ) 
@@ -21,7 +21,8 @@ Prefer answers based on standard, version-accurate Live 12 behavior, noting any 
 Keep answers concise, use numbered steps when explaining processes, and include at least one concrete example when relevant. 
 Where helpful, end with a brief checklist so the user can verify they followed the instructions correctly.
 
-Here are revelant documents: {docs}
+Here are revelant documents: {docs}. Do not mention or refer to the provided documents, retrieved text, or any sources.
+Simply answer as if you know the information.
 
 Here is the question to answer: {question}
 """
@@ -30,15 +31,13 @@ prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 
 print("Hello! I am your Ableton Live assistant.")
-print("Press q to quit at any time.")
 
 while True:
     print("\n----------------------------------------")
-    question = input("Please ask your question: ")
+    question = input("Please ask your question (press q to quit): ")
     print("\n")
     if question  == "q": 
         break
 
     docs = retriever.invoke(question)
     result = chain.invoke({"docs": docs, "question": question})
-    print(result)
