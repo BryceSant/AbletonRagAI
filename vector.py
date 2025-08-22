@@ -51,7 +51,7 @@ else:
 
 #creates retriever
 retriever = vector_store.as_retriever(
-    search_kwargs={"k": 100}
+    search_kwargs={"k": 25}
 )
     
 print("PDF embeddngs are in:", db_location)
