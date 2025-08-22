@@ -1,14 +1,14 @@
 from langchain_ollama.llms import OllamaLLM 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from vector import retriever
 
 stream_handler = StreamingStdOutCallbackHandler()
-callback_manager = CallbackManager([stream_handler])
 
 #What model you use
 model = OllamaLLM(model="llama3.1:8b",
                   streaming = True,
-                  callback_manager = callback_manager
+                  callbacks=[stream_handler]
                   ) 
 
 template = """
