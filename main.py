@@ -2,7 +2,14 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
 
-model = OllamaLLM(model="llama3.2:3b") 
+stream_handler = StreamingStdOutCallbackHandler()
+callback_manager = CallbackManager([stream_handler])
+
+#What model you use
+model = OllamaLLM(model="llama3.1:8b",
+                  streaming = True,
+                  callback_manager = callback_manager
+                  ) 
 
 template = """
 You are an expert music production teacher with deep knowledge of Ableton Live 12. 
