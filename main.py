@@ -39,6 +39,6 @@ while True:
     if question  == "q": 
         break
 
-    answer = retriever.invoke(question)
-    result = chain.invoke({"docs": answer, "question": question})
+    docs = retriever.invoke(question)
+    result = chain.invoke({"docs": docs, "question": question})
     print(result)
