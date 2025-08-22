@@ -3,14 +3,16 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from vector import retriever
 
+#stream handler
 stream_handler = StreamingStdOutCallbackHandler()
 
 #What model you use
-model = OllamaLLM(model="deepseek-r1:8b",
+model = OllamaLLM(model="llama3.1:8b",
                   streaming = True,
                   callbacks=[stream_handler]
                   ) 
 
+#What it will tell the llm for each prompt
 template = """
 You are an expert music production teacher with deep knowledge of Ableton Live 12. 
 Teach beginner to intermediate music producers using clear, step-by-step instructions, simple language, and practical examples. 
@@ -40,4 +42,5 @@ while True:
         break
 
     docs = retriever.invoke(question)
-    result = chain.invoke({"docs": docs, "question": question})
+    #result = 
+    chain.invoke({"docs": docs, "question": question})
