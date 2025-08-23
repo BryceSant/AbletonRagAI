@@ -9,8 +9,9 @@ stream_handler = StreamingStdOutCallbackHandler()
 #What model you use
 model = OllamaLLM(model="llama3.1:8b",
                   streaming = True,
-                  callbacks=[stream_handler]
-                  ) 
+                  callbacks=[stream_handler],
+                  temperature=0 #Makes it deterministic
+                  )
 
 #What it will tell the llm for each prompt
 template = """

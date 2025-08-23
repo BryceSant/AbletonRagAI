@@ -6,8 +6,16 @@ import pandas as pd
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+#Variables
+DB_LOCATION = "./chrome_langchain_db"
+ADD_DOCUMENTS = not os.path.exists(DB_LOCATION)
+CHUNK_SIZE = 600
+CHUNK_OVERLAP = 80
+K_VECTOR = 10
+SCORE_TRESHOLD_VECTOR = 0.4
+
 #Load embedding model
-embeddings = OllamaEmbeddings(model = "mxbai-embed-large")
+embeddings = OllamaEmbeddings(model = "nomic-embed-text")
 
 #Add different manuals
 pdf_files = ["Documents/live12-manual-en.pdf",
@@ -17,14 +25,16 @@ pdf_files = ["Documents/live12-manual-en.pdf",
             #"Documents/.pdf", #Use when adding more pdf's
 ]
 
-#database location
-db_location = "./chrome_langchain_db"
-add_documents = not os.path.exists(db_location)
+#Chunking
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size = CHUNK_SIZE, 
+    chunk_overlap = CHUNK_OVERLAP
+)
 
-if add_documents:
+docs = [] #Where the documents end up
+
+if ADD_DOCUMENTS:
 #Split into chunks
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = []
     for pdf in pdf_files:
         reader = PdfReader(pdf)
         #pages = [page.extract_text() for page in reader.pages]
@@ -39,11 +49,11 @@ if add_documents:
 
 vector_store = Chroma(
     collection_name="ableton_manual",
-    persist_directory=db_location,
+    persist_directory=DB_LOCATION,
     embedding_function=embeddings
 )
 
-if add_documents:
+if ADD_DOCUMENTS:
     vector_store.add_documents(docs)
     print("New documents added and saved")
 else:
@@ -51,7 +61,9 @@ else:
 
 #creates retriever
 retriever = vector_store.as_retriever(
-    search_kwargs={"k": 25}
+    search_kwargs={"k": K_VECTOR,
+                   "score_threshold": SCORE_TRESHOLD_VECTOR
+                   }
 )
     
-print("PDF embeddngs are in:", db_location)
+print("PDF embeddngs are in:", DB_LOCATION)
